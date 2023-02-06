@@ -118,8 +118,10 @@ static void handle_rental_create_offer(ethPluginProvideParameter_t *msg, context
             context->next_param = RENTAL_OFFER_STRUCT_NFT_LENGTH;
             break;
         case RENTAL_OFFER_STRUCT_NFT_LENGTH:
-            context->array_length =
-                U4BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
+            if (!U4BE_from_parameter(msg->parameter, &context->array_length)) {
+                msg->result = ETH_PLUGIN_RESULT_ERROR;
+                break;
+            }
             context->next_param = NONE;
         case NONE:
             break;
@@ -167,8 +169,10 @@ static void handle_rental_rent(ethPluginProvideParameter_t *msg, context_t *cont
             context->next_param = RENTAL_OFFER_STRUCT_NFT_LENGTH;
             break;
         case RENTAL_OFFER_STRUCT_NFT_LENGTH:
-            context->array_length =
-                U4BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
+            if (!U4BE_from_parameter(msg->parameter, &context->array_length)) {
+                msg->result = ETH_PLUGIN_RESULT_ERROR;
+                break;
+            }
             context->next_param = NONE;
         case NONE:
             break;
